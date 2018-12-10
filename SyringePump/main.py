@@ -8,7 +8,11 @@ from PyQt5.QtGui import *
 import time
 import numpy as np
 import os
-flag_stop = True
+
+flag_running = True
+rat1 = 0
+rat2 = 0
+
 class UpdateVolumeOneThread(QThread):
     Volume1update    = pyqtSignal(object)
     Volume2update    = pyqtSignal(object)
@@ -106,21 +110,21 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
 
         #initialize the pause after priming
         self.SetProgramPhase('00','2')
-        time.sleep(0.3)
+        time.sleep(0.1)
         self.SetProgramPhase('01','2')
         self.SerialInput("00 FUN PAS 00")
-        time.sleep(0.3)
+        time.sleep(0.1)
         self.SerialInput("01 FUN PAS 00")
 
         #initialize the pause after dispense
-        self.SetProgramPhase('00','4')
-        self.SetProgramPhase('01','4')
-        self.SerialInput("00 FUN PAS 01")
-        self.SerialInput("01 FUN PAS 01")
+        #self.SetProgramPhase('00','4')
+        #self.SetProgramPhase('01','4')
+        #self.SerialInput("00 FUN PAS 01")
+        #self.SerialInput("01 FUN PAS 01")
 
         #return to phase 1
         self.SetProgramPhase('00','1')
-        time.sleep(0.3)
+        time.sleep(0.1)
         self.SetProgramPhase('01','1')
         
     def SerialInput(self,input_command):
@@ -142,13 +146,6 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
     def ManualInput(self):
         self.SerialInput(self.lineEdit.text())
 
-    def GetProgramPhase(self):
-        phase = self.SerialInput('01' + ' PHN')
-        self.PushStatus("Current 01 Phase is" + str(phase))
-        time.sleep(0.5)
-        phase = self.SerialInput('00' + ' PHN')
-        self.PushStatus("Current 00 Phase is" + str(phase))
-
     def SetProgramPhase(self,address,phase):
         self.SerialInput(address + ' PHN '+ phase)
 
@@ -167,35 +164,37 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         self.SerialInput("01 DIR "+ Pump_Two_Direction)
         self.PushStatus("Directions set")
 
-    def GetDirections(self):
-        dir1 = self.SerialInput("00 DIR")
-        dir2 = self.SerialInput("01 DIR")
-        self.PumpOneDirection.setText(dir1)
-        self.PumpTwoDirection.setText(dir2)
+    #def GetDirections(self):
+     #   dir1 = self.SerialInput("00 DIR")
+     #   dir2 = self.SerialInput("01 DIR")
+     #   self.PumpOneDirection.setText(dir1)
+     #   self.PumpTwoDirection.setText(dir2)
 
-    def GetCurrentPumpRate(self):
-        rat1 = self.SerialInput("00 RAT")
-        rat2 = self.SerialInput("01 RAT")
-        self.PumpOneRate.setText(rat1)
-        self.PumpOneRate.setText(rat2)
+    #def GetCurrentPumpRate(self):
+      #  global rat1
+      #  global rat2
+      #  self.PumpOneRate.setText(rat1)
+      #  self.PumpOneRate.setText(rat2)
 
     def SetCurrentPumpRate(self):
         rat1 = self.PumpOneRate.text()
         rat2 = self.PumpTwoRate.text()
         self.SerialInput("00 RAT "+rat1+" MM")
         self.SerialInput("01 RAT "+rat2+" MM")
+        self.PushStatus('new rate set')
 
-    def GetVolume(self):
-        vol1 = self.SerialInput("00 VOL")
-        self.PumpOneVolume.setText(vol1)
-        vol2 = self.SerialInput("01 VOL")
-        self.PumpOneVolume.setText(vol2)
+    #def GetVolume(self):
+       # vol1 = self.SerialInput("00 VOL")
+       # self.PumpOneVolume.setText(vol1)
+       # vol2 = self.SerialInput("01 VOL")
+       # self.PumpOneVolume.setText(vol2)
 
     def SetVolume(self):
         vol1 = self.PumpOneVolume.text()
         vol2 = self.PumpTwoVolume.text()
         self.SerialInput("00 VOL " + vol1)
-        self.SerialInput("00 VOL " + vol2)
+        self.SerialInput("01 VOL " + vol2)
+        self.PushStatus('new volume set')
 
     def RunPump(self,address):
         if self.pump_ser_open == True:
@@ -212,11 +211,12 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         self.RunPump('01')
 
     def StopPump(self):
-        global flag_stop
-        if flag_stop != True:
-            self.SerialInput('STP')
-            self.PushStatus('paused')
-            flag_stop = True
+        global flag_running
+        if flag_running == True:
+            self.SerialInput('01 STP')
+            self.SerialInput('00 STP')
+            self.PushStatus('stopped')
+            flag_running = False
         else:
             self.PushStatus('Already paused')
 
