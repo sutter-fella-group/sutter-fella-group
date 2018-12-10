@@ -18,7 +18,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="0" colspan="5">
+    <item row="0" column="0" colspan="6">
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="1">
        <widget class="QLabel" name="label_9">
@@ -36,13 +36,6 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="PumpOneRate"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="GetCurrentPumpRateButton">
-        <property name="text">
-         <string>Get Current Rate</string>
-        </property>
-       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_11">
@@ -75,13 +68,6 @@
       <item row="1" column="0">
        <widget class="QLineEdit" name="PumpOneVolume"/>
       </item>
-      <item row="1" column="1" rowspan="2">
-       <widget class="QPushButton" name="GetSetVolumeButton">
-        <property name="text">
-         <string>Get Current Volume</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="PumpOneVolumeLabel_2">
         <property name="text">
@@ -101,7 +87,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="4">
+    <item row="1" column="5">
      <layout class="QGridLayout" name="gridLayout_12">
       <item row="0" column="0">
        <widget class="QLabel" name="SyringePumpPortLabel">
@@ -148,7 +134,7 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
+    <item row="2" column="0" rowspan="2">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label_13">
@@ -169,32 +155,28 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="2" rowspan="2" colspan="2">
-     <layout class="QGridLayout" name="gridLayout_10">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="ResetButton">
-        <property name="text">
-         <string>Reset Program</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="PumpStopButton">
-        <property name="text">
-         <string>STOP</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="RunBothButton">
-        <property name="text">
-         <string>Run Both</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="2" column="3" colspan="2">
+     <widget class="QPushButton" name="SetPurgeButton">
+      <property name="text">
+       <string>SetPurge</string>
+      </property>
+     </widget>
     </item>
-    <item row="3" column="0" colspan="2">
+    <item row="3" column="1" colspan="2">
+     <widget class="QPushButton" name="RunBothButton">
+      <property name="text">
+       <string>Run Both</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3" colspan="2">
+     <widget class="QPushButton" name="PumpStopButton">
+      <property name="text">
+       <string>STOP</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="3">
      <layout class="QGridLayout" name="gridLayout_11">
       <item row="0" column="0">
        <widget class="QPushButton" name="RunPumpOneButton">
@@ -212,7 +194,14 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0" colspan="4">
+    <item row="4" column="3" colspan="2">
+     <widget class="QPushButton" name="SetDispenseButton">
+      <property name="text">
+       <string>SetDispense</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="5">
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QLabel" name="Pump1DirLabel">
@@ -250,28 +239,28 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="0">
+    <item row="6" column="0" colspan="2">
      <widget class="QLabel" name="label_14">
       <property name="text">
        <string>Manual Serial Input</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="1" colspan="2">
+    <item row="6" column="2" colspan="2">
      <widget class="QLineEdit" name="lineEdit">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
-    <item row="5" column="3" colspan="2">
+    <item row="6" column="4" colspan="2">
      <widget class="QPushButton" name="PrintCommandButton">
       <property name="text">
        <string>print</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0" colspan="2">
+    <item row="7" column="0" colspan="3">
      <widget class="QTextEdit" name="SerialOutput">
       <property name="html">
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -282,14 +271,7 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </item>
-    <item row="6" column="2" colspan="3">
-     <widget class="QPushButton" name="GetPhaseButton">
-      <property name="text">
-       <string>Get current Phase</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0" colspan="2">
+    <item row="7" column="3" colspan="3">
      <layout class="QGridLayout" name="gridLayout_7">
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
@@ -336,7 +318,7 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </item>
-    <item row="8" column="5">
+    <item row="8" column="6">
      <widget class="QLabel" name="CameraImage">
       <property name="text">
        <string/>
@@ -344,21 +326,14 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
    </layout>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
    <zorder>CameraImage</zorder>
    <zorder>StatusLabel</zorder>
    <zorder>lineEdit</zorder>
    <zorder>label_14</zorder>
    <zorder>PrintCommandButton</zorder>
    <zorder>SerialOutput</zorder>
-   <zorder>layoutWidget_2</zorder>
-   <zorder>GetPhaseButton</zorder>
+   <zorder></zorder>
+   <zorder>SetDispenseButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="enabled">

@@ -10,9 +10,8 @@ import numpy as np
 import os
 
 flag_running = True
-rat1 = 0
-rat2 = 0
-
+vol1 = 0
+vol2 = 0
 class UpdateVolumeOneThread(QThread):
     Volume1update    = pyqtSignal(object)
     Volume2update    = pyqtSignal(object)
@@ -59,28 +58,61 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
 
         self.SetCOMPortsButton.clicked.connect(self.OpenCOMPorts)
         self.SetPumpDirectionsButton.clicked.connect(self.SetDirections)
-        self.GetPumpDirectionsButton.clicked.connect(self.GetDirections)
         self.RunPumpOneButton.clicked.connect(lambda: self.RunPump("00"))
         self.RunPumpTwoButton.clicked.connect(lambda: self.RunPump("01"))
         self.RunBothButton.clicked.connect(self.RunBoth)
         self.PumpStopButton.clicked.connect(self.StopPump)
-        self.GetSetVolumeButton.clicked.connect(self.GetVolume)
         self.SetPumpVolumeButton.clicked.connect(self.SetVolume)
-        self.ResetButton.clicked.connect(self.Reset)
         self.SetPhaseButton.clicked.connect(self.SetPhaseForBoth)
-        self.GetCurrentPumpRateButton.clicked.connect(self.GetCurrentPumpRate)
         self.SetPumpRateButton.clicked.connect(self.SetCurrentPumpRate)
-        self.GetPhaseButton.clicked.connect(self.GetProgramPhase)
         self.PrintCommandButton.clicked.connect(self.ManualInput)
+        self.SetPurgeButton.clicked.connect(self.SetPurge)
+        self.SetDispenseButton.clicked.connect(self.SetDispense)
         #initialize Values
         self.PumpOneVolume.setText("0.02")
         self.PumpTwoVolume.setText("0.05")
-        self.PumpOneRate.setText("0.1")
-        self.PumpTwoRate.setText("0.1")
+        self.PumpOneRate.setText("21")
+        self.PumpTwoRate.setText("3")
         self.updatethread_1 = UpdateVolumeOneThread(self.PumpOneVolume,self.PumpOneRate)
         self.updatethread_1.Volume1update.connect(self.UpdateDispensedVolume1)
         self.updatethread_2 = UpdateVolumeTwoThread(self.PumpTwoVolume,self.PumpTwoRate)
         self.updatethread_2.Volume2update.connect(self.UpdateDispensedVolume2)
+
+    def SetPurge(self):
+        self.SetProgramPhase('01','2')
+        self.SerialInput('01 FUN STP')
+        self.SetProgramPhase('01','1')
+        self.SerialInput('01 FUN RAT')
+        self.SerialInput('01 RAT 4')
+        self.SerialInput('01 VOL 1')
+
+    def SetDispense(self):
+        global vol1
+        global vol2
+        if vol1 != 0:
+            self.SetProgramPhase('01','2')
+            self.SerialInput('01 FUN RAT')
+            self.SerialInput('01 RAT 20')
+            self.SerialInput('01 DIR WDR')
+            self.SerialInput('01 VOL '+str(vol2))
+            self.SetProgramPhase('00','2')
+            self.SerialInput('00 FUN RAT')
+            self.SerialInput('00 RAT 3')
+            self.SerialInput('00 DIR WDR')
+            self.SerialInput('00 VOL '+str(vol1))
+            self.SetProgramPhase('01','1')
+            self.SerialInput('01 FUN RAT')
+            self.SerialInput('01 RAT 20')
+            self.SerialInput('01 DIR INF')
+            self.SerialInput('01 VOL '+str(vol2))
+            self.SetProgramPhase('00','1')
+            self.SerialInput('00 FUN RAT')
+            self.SerialInput('00 RAT 3')
+            self.SerialInput('00 DIR INF')
+            self.SerialInput('00 VOL '+str(vol1))
+        else: 
+            self.PushStatus('Dispense Rate Set')
+
 
     def UpdateDispensedVolume1(self,volume):
         self.PumpOneDIsPensedVolume.setText(str(volume))
@@ -163,7 +195,6 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         Pump_Two_Direction = self.PumpTwoDirection.text()
         self.SerialInput("01 DIR "+ Pump_Two_Direction)
         self.PushStatus("Directions set")
-
     #def GetDirections(self):
      #   dir1 = self.SerialInput("00 DIR")
      #   dir2 = self.SerialInput("01 DIR")
@@ -190,10 +221,10 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
        # self.PumpOneVolume.setText(vol2)
 
     def SetVolume(self):
+        global vol1
+        global vol2
         vol1 = self.PumpOneVolume.text()
         vol2 = self.PumpTwoVolume.text()
-        self.SerialInput("00 VOL " + vol1)
-        self.SerialInput("01 VOL " + vol2)
         self.PushStatus('new volume set')
 
     def RunPump(self,address):
