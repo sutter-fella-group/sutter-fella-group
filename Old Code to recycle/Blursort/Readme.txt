@@ -1,0 +1,1 @@
+Sorting images based on how blurry they are. Probably good for future projects.

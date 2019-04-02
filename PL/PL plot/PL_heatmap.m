@@ -1,4 +1,4 @@
-classdef app_for_heatmap_plot < matlab.apps.AppBase
+classdef PL_heatmap < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
