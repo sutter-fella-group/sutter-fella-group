@@ -95,11 +95,6 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
             self.SerialInput('01 RAT 20')
             self.SerialInput('01 DIR WDR')
             self.SerialInput('01 VOL '+str(vol2))
-            self.SetProgramPhase('00','2')
-            self.SerialInput('00 FUN RAT')
-            self.SerialInput('00 RAT 3')
-            self.SerialInput('00 DIR WDR')
-            self.SerialInput('00 VOL '+str(vol1))
             self.SetProgramPhase('01','1')
             self.SerialInput('01 FUN RAT')
             self.SerialInput('01 RAT 20')
@@ -107,7 +102,7 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
             self.SerialInput('01 VOL '+str(vol2))
             self.SetProgramPhase('00','1')
             self.SerialInput('00 FUN RAT')
-            self.SerialInput('00 RAT 3')
+            self.SerialInput('00 RAT 3.7')
             self.SerialInput('00 DIR INF')
             self.SerialInput('00 VOL '+str(vol1))
         else: 
@@ -141,12 +136,12 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         self.ser = ser
 
         #initialize the pause after priming
-        self.SetProgramPhase('00','2')
-        time.sleep(0.1)
-        self.SetProgramPhase('01','2')
-        self.SerialInput("00 FUN PAS 00")
-        time.sleep(0.1)
-        self.SerialInput("01 FUN PAS 00")
+        #self.SetProgramPhase('00','2')
+        #time.sleep(0.1)
+        #self.SetProgramPhase('01','2')
+        #self.SerialInput("00 FUN PAS 00")
+        #time.sleep(0.1)
+        #self.SerialInput("01 FUN PAS 00")
 
         #initialize the pause after dispense
         #self.SetProgramPhase('00','4')
@@ -228,7 +223,9 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         self.PushStatus('new volume set')
 
     def RunPump(self,address):
+        global flag_running
         if self.pump_ser_open == True:
+            flag_running = True
             self.SerialInput(address + " RUN")
         else:
             self.PushStatus("Port Not Open")
@@ -238,12 +235,13 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
             self.updatethread_2.start()
         
     def RunBoth(self):
-        self.RunPump('00')
-        self.RunPump('01')
+                    self.SerialInput('00 DIR WDR')
 
     def StopPump(self):
         global flag_running
         if flag_running == True:
+            self.SerialInput('01 STP')
+            self.SerialInput('00 STP')
             self.SerialInput('01 STP')
             self.SerialInput('00 STP')
             self.PushStatus('stopped')

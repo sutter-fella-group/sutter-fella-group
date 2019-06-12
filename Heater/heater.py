@@ -26,6 +26,7 @@ flag_heating_running = False
 flag_temp_capture_running = False
 time_heating_start = 0
 flag_actuator_on = False
+voltage_heating = 0
 
 class PlotCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -114,6 +115,7 @@ class HeatingThread(QThread):
         global time_heating_start
         global flag_actuator_on
         global target_temp
+        global voltage_heating
         while True:
             while pyrometer_temp < target_temp-10:
                     while flag_actuator_on == False:  
@@ -124,7 +126,7 @@ class HeatingThread(QThread):
                             time_heating_start = time.time()
                             if readings[5:9] != '0000':
                                 flag_actuator_on = True
-                    self.voltage_heating = self.voltage_heating.zfill(3)
+                    self.voltage_heating = voltage_heating.zfill(3)
                     self.SetVoltage(self.voltage_heating)
             while flag_heating_running == True:
                 self.pid = PID(2.8,0.4,0.2,setpoint=target_temp)
@@ -152,8 +154,9 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         global voltage_ser_open
         global flag_heating_running
         global flag_temp_capture_running
+        global voltage_heating
         #default ramping temperature
-        self.voltage_heating = '150'
+        voltage_heating = '150'
         #map the gui
         self.SetCOMPortsButton.clicked.connect(self.OpenCOMPorts)
         self.StartStopHeatingButton.clicked.connect(self.StartHeating)
@@ -181,12 +184,14 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         self.plotter.move(450,190)
 
     def SetRampVoltage(self):
-        self.voltage_heating = self.lineEdit.text()+'0'
+        global voltage_heating
+        voltage_heating = self.lineEdit.text()+'0'
         self.PushStatus('initial ramp voltage set to:' + self.lineEdit.text())
 
     # configure the serial connections (the parameters differs on the computer you are connecting to)
     def ConnectVoltageSerial(self, input_port):
         global voltage_ser_open
+        global voltage_heating
         ser = serial.Serial(
             port=input_port,
             baudrate=9600,
@@ -196,7 +201,7 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         )
         voltage_ser_open = True
         self.voltage_ser = ser
-        self.heatingthread = HeatingThread(self.voltage_ser,self.PushStatus,self.voltage_heating)
+        self.heatingthread = HeatingThread(self.voltage_ser,self.PushStatus,voltage_heating)
 
     def TempCapture(self):
         global flag_temp_capture_running
@@ -217,7 +222,7 @@ class App(QtWidgets.QMainWindow,Ui_MainWindow):
         global flag_heating_running
         global target_temp
         if self.HeatingModeSelection.currentText() == '100C':
-            target_temp = 102
+            target_temp = 112
             self.heatingthread.start()
         elif self.HeatingModeSelection.currentText() == '140C':
             target_temp = 143
