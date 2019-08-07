@@ -20,15 +20,15 @@ cd(selpath_output)
 data_mat = cell2mat (A_data);
 temp = size(data_mat);
 num_row = temp(1);%changes with the number of frames taken
-if data_mat(1,1) == 0
-    num_frame = data_mat(num_row,1)+1;
-elseif data_mat(1,1) == 1
-    num_frame = data_mat(num_row,1);
+if data_mat(1,2) == 0
+    num_frame = data_mat(num_row,2)+1;
+elseif data_mat(1,2) == 1
+    num_frame = data_mat(num_row,2);
 end
 %% set parameters - partially manual
 frame_end = num_frame-frame_start+1;
 row_per_frame = rpf(data_mat);%acquires row per frame
-dspace = data_mat(1:row_per_frame,6);
+dspace = data_mat(1:row_per_frame,3);
 q = 2*pi./dspace;
 [intensity, time_frame] = intac(data_mat,row_per_frame,num_row,time_per_frame,frame_start,frame_end);
 %for i = 1:frame_end
@@ -40,7 +40,7 @@ plot_range = q;
 %output selected frame
 %% Filled contour plotting
 h = figure;
-contourf(plot_range,time_frame,intensity',n,'LineStyle','none');
+contourf(plot_range,time_frame,intensity,n,'LineStyle','none');
 p = jet(128);
 %p(1:16,:)=[linspace(1,0,16)',linspace(1,0,16)',linspace(1,1,16)'];
 colormap(p)
@@ -49,8 +49,8 @@ set(gca,'XMinorTick','on','YMinorTick','on')
 FontName = 'Arial';
 ylabel('Time (s)','FontSize',24,'FontName', FontName)
 xlabel('q','FontSize',24,'FontName', FontName)
-xticks (0.5:0.5:3.5)
-xticklabels(0.5:0.5:3.5)
+xticks (0.5:0.5:4.5)
+xticklabels(0.5:0.5:4.5)
 %set(gca,'TickDir','out');
 
 xlim([0.8838 4.283]);
@@ -79,7 +79,7 @@ end
 function rpf_val = rpf(data_mat)
 rpf_val = 0;
 for k = 1:size(data_mat,1)
-    if data_mat(k,1) == 1
+    if data_mat(k,2) == 1
         rpf_val = rpf_val+1;
     else
     end

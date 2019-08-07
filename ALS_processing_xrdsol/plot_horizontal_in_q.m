@@ -40,40 +40,43 @@ plot_range = q;
 %output selected frame
 %% Filled contour plotting
 h = figure;
-contourf(plot_range,time_frame,intensity,n,'LineStyle','none');
+contourf(time_frame,plot_range,intensity,n,'LineStyle','none');
 p = jet(128);
 %p(1:16,:)=[linspace(1,0,16)',linspace(1,0,16)',linspace(1,1,16)'];
 colormap(p)
 caxis(color_range)
 set(gca,'XMinorTick','on','YMinorTick','on')
 FontName = 'Arial';
-ylabel('Time (s)','FontSize',24,'FontName', FontName)
-xlabel('q','FontSize',24,'FontName', FontName)
-xticks (0.5:0.5:4.5)
-xticklabels(0.5:0.5:4.5)
+xlabel('Time (s)','FontSize',24,'FontName', FontName)
+ylabel('q','FontSize',24,'FontName', FontName)
+
+%change q ticks here
+yticks (0.5:0.5:3.5)
+yticklabels(0.5:0.5:3.5)
 %set(gca,'TickDir','out');
 
-xlim([0.8838 4.283]);
+ylim([0.8838 4.283]);
+
 set(gca, 'FontSize', 22,'FontName', FontName);
 set(gcf,'Position',[1 1 1536 703.2])
 colorbar
 a = gca;
 set(a,'box','on','color','none');
-a.PlotBoxAspectRatio =([3/4,1, 1]);
-set(gcf,'color','white');
+a.PlotBoxAspectRatio =([1, 3/4, 1]);
+set(gcf,'color','black');
 
 %% plot the zoomed graph
 num_tick = 7;
-for y_limit_2 = [60]% 600 1200 1800]
-a.YLim=  [0 y_limit_2];
-a.YTick = (linspace(0,y_limit_2,num_tick));
-a.YTickLabel = (linspace(0,y_limit_2,num_tick));
-a.YAxis.MinorTickValues = y_limit_2/12:y_limit_2/6:y_limit_2*11/12;
+for x_limit = [60]% 600 1200 1800]
+a.XLim=  [0 x_limit];
+a.XTick = (linspace(0,x_limit,num_tick));
+a.XTickLabel = (linspace(0,x_limit,num_tick));
+a.XAxis.MinorTickValues = x_limit/12:x_limit/6:x_limit*11/12;
 b = copyobj(a, gcf);
 set(b,'Position',get(a,'Position'),'box','on','xlabel',[],'ylabel',[],'linewidth', 1.5);
 set(b, 'Xcolor', [1 1 1], 'YColor', [1 1 1], 'XTickLabel', [], 'YTickLabel', [], 'XLabel', [], 'YLabel', [])
 img = getframe(gcf);
-imwrite(img.cdata, [fname_contour '_' num2str(y_limit_2) '.png']);
+imwrite(img.cdata, [fname_contour '_' num2str(x_limit) '.png']);
 end
 %%
 function rpf_val = rpf(data_mat)
